@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Cargar datos con AJAX</title>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <style>
+            *{font-family:arial;}
+        </style>
+    </head>
+    <body>
+        <h1>Cargar un select dinámicamente con JQUERY</h1>
+       
+        <div class="selector-pais">
+            Elige un país:
+            <select></select>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $.ajax({
+                            type: "POST",
+                            url: "getPaises.php",
+                            success: function(response)
+                            {
+                                $('.selector-pais select').html(response).fadeIn();
+                            }
+                    });
+
+                });
+            </script>
+        </div>
+        <hr>
+        <div class="sin-json">
+            <h4>Este es un ejemplo sencillo sin JSON</h4>
+            Regiones:
+            <select></select>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $(".selector-pais select").change(function() {
+                        var form_data = {
+                                is_ajax: 1,
+                                pais: +$(".selector-pais select").val()
+                        };
+                        $.ajax({
+                                type: "POST",
+                                url: "getProvincias.php",
+                                data: form_data,
+                                success: function(response)
+                                {
+                                    $('.sin-json select').html(response).fadeIn();
+                                }
+                        });
+                    });
+
+                });
+            </script>
+        </div>
+        <hr>
+        <div class="con-json">
+            <h4>Este es un ejemplo con JSON</h4>
+            Regiones:
+            <select></select>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $(".selector-pais select").change(function() {
+                        $(".con-json select").empty();
+                        $.getJSON('getProvinciasJson.php?pais='+$(".selector-pais select").val(),function(data){
+                            $.each(data, function(id,value){
+                                $(".con-json select").append('<option value="'+id+'">'+value+'</option>');
+                            });
+                        });
+                    });
+                });
+            </script>
+        </div>
+        <hr>
+        <div class="con-load">
+            <input type="button" id="boton" value="Insertar">
+            <textarea id="cuadrotexto" rows="4" cols="50"></textarea>
+                <script type="text/javascript">
+                    $("#boton").click(function(){
+                        $("#cuadrotexto").load("texto1.txt");
+                    });
+                </script>
+        </div>
+    </body>
+</html>
